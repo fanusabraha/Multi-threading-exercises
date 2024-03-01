@@ -1,24 +1,23 @@
 package com.coderscampus.assignment;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class Main {
-    public static void main(String[] args) {
-        MultithreadingApplication assignment = new MultithreadingApplication();
-        System.out.println("Start of Main Thread");
-        for (int i=0; i<1000; i++) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        MultithreadingApplication assignmentResult = new MultithreadingApplication();
+        List<Integer> finalResult = assignmentResult.firstResult();
 
-           CompletableFuture
-                    .supplyAsync(()-> assignment, Executors.newSingleThreadExecutor())
-                   .thenApplyAsync(m->m.getNumbers())
-                   .thenAcceptAsync(n-> System.out.println(n),Executors.newCachedThreadPool());
-            synchronized (assignment.getNumbers()) {
-                Map<Integer, Long> repetitivNumbers = assignment.getNumbers().stream().collect(Collectors.groupingBy(n -> n, Collectors.counting()));
-                System.out.println(repetitivNumbers);
-            }
+        synchronized (assignmentResult.getNumbers()) {
+            Map<Integer, Long> repetitivNumbers = finalResult.stream()
+                    .collect(Collectors.groupingBy(n -> n, Collectors.counting()));
+
+            repetitivNumbers.forEach((theNumber,countTimes)->{System.out.println(theNumber +"  " +countTimes);});
         }
-        System.out.println("end of the Main Thread ");
+
     }
 }

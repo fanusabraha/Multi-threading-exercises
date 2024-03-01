@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -45,7 +47,7 @@ public class MultithreadingApplication {
         // force thread to pause for half a second to simulate actual Http / API traffic
         // delay
         try {
-            Thread.sleep(500);
+            Thread.sleep(0);
         } catch (InterruptedException e) {
         }
 
@@ -57,6 +59,16 @@ public class MultithreadingApplication {
 
         System.out.println("Done Fetching records " + start + " to " + (end));
         return newList;
+    }
+    //
+    public List<Integer> firstResult(){
+        MultithreadingApplication assignment = new MultithreadingApplication();
+        for (int i=0; i<1000; i++) {
+             CompletableFuture
+                    .supplyAsync(assignment::getNumbers, Executors.newSingleThreadExecutor());
+
+        }
+        return numbers;
     }
 
 }
